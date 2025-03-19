@@ -1,3 +1,4 @@
+import { SpeechRecognition } from "@/types";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 interface UseTranscriptionOptions {
@@ -58,7 +59,7 @@ export function useTranscription({
 
     recognition.continuous = continuous;
     recognition.interimResults = interimResults;
-    recognition.lang = "en-US";
+    recognition.lang = "en-GB";
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -153,48 +154,4 @@ export function useTranscription({
     error,
     browserSupport,
   };
-}
-
-// Add TypeScript declarations for the Web Speech API
-interface SpeechRecognitionErrorEvent extends Event {
-  error: string;
-}
-
-interface SpeechRecognitionEvent extends Event {
-  resultIndex: number;
-  results: {
-    [index: number]: {
-      [index: number]: {
-        transcript: string;
-        confidence: number;
-      };
-      isFinal: boolean;
-      length: number;
-    };
-    length: number;
-  };
-}
-
-interface SpeechRecognition extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onstart: (event: Event) => void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onerror: (event: SpeechRecognitionErrorEvent) => void;
-  onend: (event: Event) => void;
-  start: () => void;
-  stop: () => void;
-  abort: () => void;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition: {
-      new (): SpeechRecognition;
-    };
-    webkitSpeechRecognition: {
-      new (): SpeechRecognition;
-    };
-  }
 }
