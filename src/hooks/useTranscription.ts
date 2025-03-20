@@ -9,10 +9,11 @@ interface UseTranscriptionOptions {
 interface UseTranscriptionReturn {
   transcript: string;
   isListening: boolean;
-  startListening: () => void;
-  stopListening: () => void;
   error: string | null;
   browserSupport: boolean;
+  startListening: () => void;
+  stopListening: () => void;
+  clearTranscript: () => void;
 }
 
 export function useTranscription({
@@ -25,7 +26,6 @@ export function useTranscription({
   const [error, setError] = useState<string | null>(null);
   const [browserSupport, setBrowserSupport] = useState<boolean>(false);
 
-  // Combine final and interim transcripts for display
   const transcript = finalTranscript + interimTranscript;
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -78,12 +78,10 @@ export function useTranscription({
         }
       }
 
-      // Update with final results
       if (newFinalTranscript) {
         setFinalTranscript((prev) => prev + newFinalTranscript + " ");
-        setInterimTranscript(""); // Clear interim transcript when we have final results
+        setInterimTranscript("");
       } else if (newInterimTranscript) {
-        // Only update interim transcript, don't touch final transcript
         setInterimTranscript(newInterimTranscript);
       }
     };
@@ -137,6 +135,11 @@ export function useTranscription({
     }
   }, []);
 
+  const clearTranscript = useCallback(() => {
+    setFinalTranscript("");
+    setInterimTranscript("");
+  }, []);
+
   // Clean up on unmount
   useEffect(() => {
     return () => {
@@ -149,9 +152,10 @@ export function useTranscription({
   return {
     transcript,
     isListening,
-    startListening,
-    stopListening,
     error,
     browserSupport,
+    startListening,
+    stopListening,
+    clearTranscript,
   };
 }

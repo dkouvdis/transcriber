@@ -16,7 +16,7 @@ export const TranscriptionBox = ({
           {transcript}
         </p>
       ) : (
-        <p className={`text-white leading-snug`}>
+        <p className={`text-gray-200 leading-snug`}>
           {isListening
             ? "Listening... Speak now"
             : "Press Start to begin transcription"}

@@ -6,9 +6,10 @@ export function TranscriptionPanel() {
   const {
     transcript,
     isListening,
+    browserSupport,
     startListening,
     stopListening,
-    browserSupport,
+    clearTranscript,
   } = useTranscription();
 
   return (
@@ -18,9 +19,10 @@ export function TranscriptionPanel() {
 
         <Controls
           isListening={isListening}
+          browserSupport={browserSupport}
           startListening={startListening}
           stopListening={stopListening}
-          browserSupport={browserSupport}
+          clearTranscript={clearTranscript}
         />
       </div>
     </div>
