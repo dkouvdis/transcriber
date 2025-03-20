@@ -29,8 +29,8 @@ export function useTranscription({
   const transcript = finalTranscript + interimTranscript;
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const shouldListenRef = useRef(false);
 
-  // Check browser support
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -44,7 +44,6 @@ export function useTranscription({
     }
   }, []);
 
-  // Initialize speech recognition
   const initRecognition = useCallback(() => {
     if (!browserSupport) return;
 
@@ -95,17 +94,18 @@ export function useTranscription({
     recognition.onend = () => {
       setIsListening(false);
 
-      // Auto restart if we're supposed to be listening
-      // but the recognition service stopped
-      if (isListening && continuous) {
-        recognition.start();
+      if (shouldListenRef.current && continuous) {
+        try {
+          recognition.start();
+        } catch (err) {
+          console.error("Failed to restart recognition:", err);
+        }
       }
     };
 
     recognitionRef.current = recognition;
-  }, [browserSupport, continuous, interimResults, isListening]);
+  }, [browserSupport, continuous, interimResults]);
 
-  // Start listening
   const startListening = useCallback(() => {
     setError(null);
 
@@ -119,16 +119,18 @@ export function useTranscription({
     }
 
     try {
+      shouldListenRef.current = true;
       recognitionRef.current?.start();
       setIsListening(true);
     } catch (err) {
       console.error("Failed to start speech recognition:", err);
       setError("Failed to start listening");
+      shouldListenRef.current = false;
     }
   }, [browserSupport, initRecognition]);
 
-  // Stop listening
   const stopListening = useCallback(() => {
+    shouldListenRef.current = false;
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       setIsListening(false);
@@ -140,7 +142,6 @@ export function useTranscription({
     setInterimTranscript("");
   }, []);
 
-  // Clean up on unmount
   useEffect(() => {
     return () => {
       if (recognitionRef.current) {
