@@ -32,23 +32,19 @@ export function useTranscription({
   const shouldListenRef = useRef(false);
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       setBrowserSupport(true);
     } else {
       setBrowserSupport(false);
-      setError(
-        "Your browser does not support the Web Speech API. Try using Chrome."
-      );
+      setError("Your browser does not support the Web Speech API. Try using Chrome.");
     }
   }, []);
 
   const initRecognition = useCallback(() => {
     if (!browserSupport) return;
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (recognitionRef.current) {
       recognitionRef.current.stop();
