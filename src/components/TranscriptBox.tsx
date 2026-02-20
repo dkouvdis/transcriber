@@ -3,10 +3,7 @@ type TranscriptionBoxProps = {
   isListening: boolean;
 };
 
-export const TranscriptionBox = ({
-  transcript,
-  isListening,
-}: TranscriptionBoxProps) => {
+export const TranscriptionBox = ({ transcript, isListening }: TranscriptionBoxProps) => {
   return (
     <div className="relative p-4 bg-black rounded-lg max-h-[300px] overflow-auto h-[50vh] flex flex-col-reverse">
       {transcript ? (
@@ -17,9 +14,7 @@ export const TranscriptionBox = ({
         </p>
       ) : (
         <p className={`text-gray-200 leading-snug`}>
-          {isListening
-            ? "Listening... Speak now"
-            : "Press Start to begin transcription"}
+          {isListening ? "Listening... Speak now" : "Press Start to begin transcription"}
         </p>
       )}
     </div>
